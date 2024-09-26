@@ -5,14 +5,14 @@ import '../components/button.dart';
 import '../components/square_tile.dart';
 import '../constants/const.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController userPasswordcontroller = TextEditingController();
 
@@ -61,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               //user name textfield
               MyTextField(
-                hintText: 'User name',
+                hintText: 'Email',
                 obscureText: false,
                 controller: emailController,
               ),
               const SizedBox(height: 10),
               // password field
               MyTextField(
-                hintText: 'User name',
+                hintText: 'Password',
                 obscureText: true,
                 controller: userPasswordcontroller,
               ),
@@ -92,7 +92,15 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               //Sign in button
               const SizedBox(height: 25),
-              MyButton(onTap: signUserIn, text: "Sign In"),
+              MyButton(
+                onTap: signUserIn,
+                text: "Sign Up",
+                //   onPressed: () async {
+                //   await _authService.signUp(
+                //       _emailController.text, _passwordController.text);
+                //   // Navigate to the next page
+                // },
+              ),
               // or continue with
               const SizedBox(height: 50),
               Row(

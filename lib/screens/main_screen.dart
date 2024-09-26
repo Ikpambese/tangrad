@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/constants/const.dart';
 import 'package:tangrad/screens/document_upload.dart';
+import 'package:tangrad/screens/uploads.dart';
 import 'package:tangrad/services/service_model.dart';
 
 class MainScreen extends StatefulWidget {
@@ -56,12 +57,12 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     );
                   } else if (selectedService == 2) {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const RegistrationPage(),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UploadDocumentPage(),
+                      ),
+                    );
                   } else if (selectedService == 3) {
                     // Navigator.push(
                     //   context,
