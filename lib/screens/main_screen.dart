@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/constants/const.dart';
 import 'package:tangrad/screens/document_upload.dart';
+import 'package:tangrad/screens/sign_up.dart';
 import 'package:tangrad/screens/uploads.dart';
 import 'package:tangrad/services/service_model.dart';
 
@@ -32,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
           elevation: 0,
           actions: const [
             CircleAvatar(
-              backgroundImage: AssetImage('assets/imgs/church.png'),
+              backgroundImage: AssetImage('lib/images/upload.png'),
             ),
             SizedBox(width: 15)
           ],
@@ -64,12 +65,12 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     );
                   } else if (selectedService == 3) {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const RegistrationPage(),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SignUpScreen(),
+                      ),
+                    );
                   }
                 },
                 backgroundColor: Colors.white,
@@ -86,15 +87,6 @@ class _MainScreenState extends State<MainScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(
                       top: 120.0, right: 20.0, left: 20.0),
-                  // child: Text(
-                  //   'Hi Benjamin\nFeeling positive ?',
-                  //   style: TextStyle(
-                  //     fontSize: 40,
-                  //     color: Colors.grey.shade900,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-
                   child: RichText(
                     text: TextSpan(
                       children: [
