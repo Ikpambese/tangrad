@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/constants/const.dart';
-import 'package:tangrad/services/slider_button.dart';
+import 'package:tangrad/widgets/slider_button.dart';
 import 'dart:io';
-import '../services/document_service.dart';
+import '../widgets/document_service.dart';
 
 class UploadDocumentPage extends StatefulWidget {
   @override

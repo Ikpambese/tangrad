@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tangrad/services/progress_bar.dart';
+import 'package:tangrad/widgets/progress_bar.dart';
 
 class LoadingDialog extends StatelessWidget {
   final String? message;

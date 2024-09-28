@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/constants/const.dart';
-import 'package:tangrad/screens/document_upload.dart';
+
+import 'package:tangrad/screens/profile_screen.dart';
 import 'package:tangrad/screens/sign_up.dart';
 import 'package:tangrad/screens/uploads.dart';
-import 'package:tangrad/services/service_model.dart';
+import 'package:tangrad/widgets/service_model.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
     Service('Pre admission', 'lib/images/preadd.png'),
     Service('Post admission', 'lib/images/postadd.png'),
     Service('Visa assist', 'lib/images/visa.png'),
-    Service('Update', 'lib/images/update.png'),
+    //Service('Update', 'lib/images/update.png'),
     Service('Profile', 'lib/images/profile.png'),
     Service('Edit', 'lib/images/settings.png'),
   ];
@@ -47,17 +48,19 @@ class _MainScreenState extends State<MainScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UploadPdfScreen(),
+                        builder: (context) => UploadDocumentPage(),
                       ),
                     );
                   } else if (selectedService == 1) {
+                    // Pre admission and update
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UploadPdfScreen(),
+                        builder: (context) => UploadDocumentPage(),
                       ),
                     );
                   } else if (selectedService == 2) {
+                    //post admission and update
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -65,10 +68,19 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     );
                   } else if (selectedService == 3) {
+                    // visa assist and update
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const SignUpScreen(),
+                      ),
+                    );
+                  } else if (selectedService == 4) {
+                    // visa assist and update
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(user: null!),
                       ),
                     );
                   }
@@ -85,8 +97,8 @@ class _MainScreenState extends State<MainScreen> {
             return <Widget>[
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 120.0, right: 20.0, left: 20.0),
+                  padding:
+                      const EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0),
                   child: RichText(
                     text: TextSpan(
                       children: [
