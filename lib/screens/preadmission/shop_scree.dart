@@ -3,16 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:tangrad/components/coffee_tile.dart';
 import 'package:tangrad/constants/const.dart';
 import 'package:tangrad/models/coffee.dart';
-import '../models/shop.dart';
+import '../../models/shop.dart';
 
-class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key});
+class UploadedDocumentsPage extends StatefulWidget {
+  const UploadedDocumentsPage({super.key});
 
   @override
-  State<ShopScreen> createState() => _ShopScreenState();
+  State<UploadedDocumentsPage> createState() => _UploadedDocumentsPageState();
 }
 
-class _ShopScreenState extends State<ShopScreen> {
+class _UploadedDocumentsPageState extends State<UploadedDocumentsPage> {
   void addTocart(Coffee coffee) {
     Provider.of<Coffeeshop>(context, listen: false).addItemsToCart(coffee);
     showDialog(

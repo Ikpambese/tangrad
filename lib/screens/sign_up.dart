@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/components/my_text_field.dart';
-import 'package:tangrad/screens/home_screen.dart';
+import 'package:tangrad/screens/preadmission/pre_addmission.dart';
 import '../components/button.dart';
 import '../components/square_tile.dart';
 import '../constants/const.dart';
@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => PreadmissionPage(),
       ),
     );
   }

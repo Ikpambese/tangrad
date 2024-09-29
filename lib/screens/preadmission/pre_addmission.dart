@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/components/botton_navbar.dart';
 import 'package:tangrad/constants/const.dart';
-import 'package:tangrad/screens/shop_scree.dart';
+import 'package:tangrad/screens/preadmission/shop_scree.dart';
 
 import 'cart_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PreadmissionPage extends StatefulWidget {
+  const PreadmissionPage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PreadmissionPage> createState() => _PreadmissionPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _PreadmissionPageState extends State<PreadmissionPage> {
   int _selectedIndex = 0;
 
   void navigateBotton(int index) {
@@ -22,8 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<Widget> _pages = [
-    const ShopScreen(),
-    const Cart(),
+    const UploadedDocumentsPage(),
+    const PreadmissionStatus(),
   ];
   @override
   Widget build(BuildContext context) {

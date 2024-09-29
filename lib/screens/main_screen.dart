@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/constants/const.dart';
+import 'package:tangrad/screens/preadmission/pre_addmission.dart';
 
 import 'package:tangrad/screens/profile_screen.dart';
 import 'package:tangrad/screens/sign_up.dart';
 import 'package:tangrad/screens/uploads.dart';
 import 'package:tangrad/widgets/service_model.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   List<Service> services = [
     Service('Uploads', 'lib/images/upload.png'),
     Service('Pre admission', 'lib/images/preadd.png'),
@@ -56,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UploadDocumentPage(),
+                        builder: (context) => PreadmissionPage(),
                       ),
                     );
                   } else if (selectedService == 2) {
@@ -64,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UploadDocumentPage(),
+                        builder: (context) => PreadmissionPage(),
                       ),
                     );
                   } else if (selectedService == 3) {
