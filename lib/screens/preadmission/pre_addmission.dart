@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tangrad/components/botton_navbar.dart';
 import 'package:tangrad/constants/const.dart';
-import 'package:tangrad/screens/preadmission/shop_scree.dart';
+import 'package:tangrad/screens/preadmission/uploadeddoc.dart';
 
-import 'cart_screen.dart';
+import 'pre_add_status.dart';
 
 class PreadmissionPage extends StatefulWidget {
   const PreadmissionPage({super.key});
@@ -22,7 +22,7 @@ class _PreadmissionPageState extends State<PreadmissionPage> {
   }
 
   final List<Widget> _pages = [
-    const UploadedDocumentsPage(),
+    UploadedDocumentsPage(),
     const PreadmissionStatus(),
   ];
   @override

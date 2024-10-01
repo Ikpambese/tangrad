@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tangrad/models/document_provider.dart';
 
 import 'models/shop.dart';
 import 'screens/splash/splash.dart';
@@ -15,8 +16,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Coffeeshop(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DocumentProvider()),
+      ],
       builder: (context, child) => const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
