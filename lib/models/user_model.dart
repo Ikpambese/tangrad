@@ -5,6 +5,7 @@ import 'service_status.dart';
 class User {
   String id;
   String name;
+  String userurl;
   String firstName;
   String lastName;
   String middleName;
@@ -14,15 +15,17 @@ class User {
   List<Document> documents;
   List<ServiceStatus> serviceStatuses;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.phone,
-      required this.password,
-      required this.documents,
-      required this.serviceStatuses,
-      required this.firstName,
-      required this.lastName,
-      required this.middleName});
+  User({
+    required this.userurl,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.password,
+    required this.documents,
+    required this.serviceStatuses,
+    required this.firstName,
+    required this.lastName,
+    required this.middleName,
+  });
 }

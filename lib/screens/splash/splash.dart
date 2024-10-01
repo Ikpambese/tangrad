@@ -7,6 +7,7 @@ import 'dart:math' show pi;
 
 import 'package:tangrad/screens/login.dart';
 import 'package:tangrad/screens/main_screen.dart';
+import 'package:tangrad/screens/sign_up.dart';
 
 import '../../constants/const.dart';
 
@@ -40,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(seconds: 5), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => HomeScreen(),
+          builder: (context) => SignUpScreen(),
           //HomeScreen()
         ),
       );
