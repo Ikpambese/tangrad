@@ -1,4 +1,4 @@
-package com.example.tangrad
+package com.tangrad.app
 
 import io.flutter.embedding.android.FlutterActivity
 

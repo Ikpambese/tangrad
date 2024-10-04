@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as fStorage;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,37 +23,25 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController prefName = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-
-  void signUserIn() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
-  }
 
   XFile? imageXfile;
   final ImagePicker _picker = ImagePicker();
 
   String userImageUrl = '';
+  SharedPreferences? sharedPreferences;
 
-// GET IMAGE FROM FILE
+  // GET IMAGE FROM FILE OR CAMERA
   Future<void> _getImage() async {
     imageXfile = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
-      imageXfile;
+      imageXfile = imageXfile; // Update the state correctly
     });
   }
 
-//final _authService = AuthService();
-  int selectedService = -1;
-
-  Future<void> formValiation() async {
+  Future<void> formValidation() async {
     if (imageXfile == null) {
       showDialog(
         context: context,
@@ -63,119 +51,170 @@ class _SignUpScreenState extends State<SignUpScreen> {
           );
         },
       );
-    } else {
-      if (passwordController.text == confirmPasswordController.text) {
-        if (confirmPasswordController.text.isNotEmpty &&
-            passwordController.text.isNotEmpty &&
-            emailController.text.isNotEmpty) {
-          // START UPLOADING IMAGE
-          showDialog(
-              context: context,
-              builder: (c) {
-                return LoadingDialog(
-                  message: 'Registering Account',
-                );
-              });
-
-          // Image Storage to Firebase Storage
-
-          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
-          fStorage.Reference reference = fStorage.FirebaseStorage.instance
-              .ref()
-              .child('users')
-              .child(fileName);
-
-          fStorage.UploadTask uploadTask =
-              reference.putFile(File(imageXfile!.path));
-          // download url
-          fStorage.TaskSnapshot taskSnapshot =
-              await uploadTask.whenComplete(() {});
-          await taskSnapshot.ref.getDownloadURL().then((url) {
-            userImageUrl = url;
-
-            // save info to firestore
-
-            AuthenticateSeller();
-          });
-        } else {
-          showDialog(
-            context: context,
-            builder: (c) {
-              return ErroDialog(
-                message: 'Please write the required info for registration',
-              );
-            },
+    } else if (passwordController.text != confirmPasswordController.text) {
+      showDialog(
+        context: context,
+        builder: (c) {
+          return ErroDialog(
+            message: 'Hmm, Passwords do not match',
           );
-        }
-      } else {
+        },
+      );
+    } else if (emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (c) {
+          return ErroDialog(
+            message: 'Please provide all required information',
+          );
+        },
+      );
+    } else {
+      try {
+        // START UPLOADING IMAGE
+        showDialog(
+          context: context,
+          builder: (c) {
+            return LoadingDialog(
+              message: 'Registering Account',
+            );
+          },
+        );
+
+        //Image Storage to Firebase Storage
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        firebase_storage.Reference reference = firebase_storage
+            .FirebaseStorage.instance
+            .ref()
+            .child('users')
+            .child(fileName);
+
+        firebase_storage.UploadTask uploadTask =
+            reference.putFile(File(imageXfile!.path));
+
+        // Download URL
+        await uploadTask.whenComplete(() async {
+          userImageUrl = await reference.getDownloadURL();
+
+          // Save info to Firestore and authenticate user
+          authenticateUser();
+        });
+      } catch (error) {
+        Navigator.pop(context); // Close loading dialog if any error occurs
+
         showDialog(
           context: context,
           builder: (c) {
             return ErroDialog(
-              message: 'Hmm, Passwords do not match',
+              message: 'An error occurred: ${error.toString()}',
             );
           },
         );
+
+        rethrow;
       }
     }
   }
 
-  void AuthenticateSeller() async {
+  void authenticateUser() async {
     User? currentUser;
 
-    await firebaseAuth
-        .createUserWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    )
-        .then((auth) {
-      currentUser = auth.user;
-    }).catchError((error) {
+    try {
+      (await firebaseAuth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      ));
+      currentUser = await firebaseAuth.currentUser;
+      if (currentUser != null) {
+        print(currentUser.uid);
+        print(currentUser.email);
+        print(currentUser.displayName);
+        await saveDataToFirestore(currentUser).then((value) {
+          Navigator.pop(context); // Close loading dialog
+
+          // Send user to Home
+          Route newRoute = MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          );
+          Navigator.pushReplacement(context, newRoute);
+        });
+      }
+    } on FirebaseAuthException catch (e) {
+      // Close loading dialog
       Navigator.pop(context);
+
+      String errorMessage;
+      if (e.code == 'weak-password') {
+        errorMessage = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'The email address is invalid.';
+      } else {
+        errorMessage = 'An unknown error occurred: ${e.message}';
+      }
 
       showDialog(
         context: context,
         builder: (c) {
           return ErroDialog(
-            message: error.message.toString(),
+            message: errorMessage,
           );
         },
       );
-    });
+    } catch (error) {
+      // Generic error handling, just in case it's not a Firebase-specific issue
+      Navigator.pop(context); // Close loading dialog
 
-    if (currentUser != null) {
-      saveDataToFirestore(currentUser!).then((value) {
-        Navigator.pop(context);
-
-        // Send user to Home
-        Route newRoute = MaterialPageRoute(
-          builder: ((context) => const HomeScreen()),
-        );
-        Navigator.pushReplacement(context, newRoute);
-      });
+      showDialog(
+        context: context,
+        builder: (c) {
+          return ErroDialog(
+            message: error.toString(),
+          );
+        },
+      );
+      rethrow;
     }
   }
 
-  Future saveDataToFirestore(User currentUser) async {
-    FirebaseFirestore.instance.collection('users').doc(currentUser.uid).set({
-      'userUID': currentUser.uid,
-      'userEmail': currentUser.email,
-      'userPhoto': userImageUrl,
-      'userStatus': 'approved',
-      'firstName': 'null',
-      'lastName': 'null',
-      'middleName': 'null',
-      'userDocuments': [],
-      'userServices':
-          [], // Maps each ServiceStatus to a Firestore-friendly format
-    });
+  Future<void> saveDataToFirestore(User currentUser) async {
+    try {
+      // Save user data to Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .set({
+        'userUID': currentUser.uid,
+        'userEmail': currentUser.email,
+        'userPhoto': userImageUrl,
+        'userStatus': 'approved',
+        'firstName': 'null',
+        'lastName': 'null',
+        'middleName': 'null',
+        'userDocuments': [],
+        'userServices': [],
+      });
 
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString('uid', currentUser.uid);
-    await sharedPreferences!.setString('email', currentUser.email.toString());
-    await sharedPreferences!.setString('photoUrl', userImageUrl);
-    await sharedPreferences!.setStringList('userDocuments', []); //
+      // Save user data to SharedPreferences
+      sharedPreferences = await SharedPreferences.getInstance();
+      await sharedPreferences!.setString('uid', currentUser.uid);
+      await sharedPreferences!.setString('email', currentUser.email.toString());
+      await sharedPreferences!.setString('photoUrl', userImageUrl);
+      await sharedPreferences!.setStringList('userDocuments', []);
+    } catch (error) {
+      // Handle any errors that occur during the process
+      showDialog(
+        context: context,
+        builder: (c) {
+          return ErroDialog(
+            message: 'An error occurred while saving data: ${error.toString()}',
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -207,10 +246,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
 
-              const SizedBox(
-                height: 50,
-              ),
-              // welcome back, you've been missing
+              const SizedBox(height: 50),
               Text(
                 'Welcome to tangrad education',
                 style: TextStyle(
@@ -218,24 +254,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(
-                height: 25,
-              ),
-              //user name textfield
+              const SizedBox(height: 25),
 
+              // Email text field
               MyTextField(
                 hintText: 'Email',
                 obscureText: false,
                 controller: emailController,
               ),
               const SizedBox(height: 10),
-              // password field
+
+              // Password text field
               MyTextField(
                 hintText: 'Password',
                 obscureText: true,
                 controller: passwordController,
               ),
               const SizedBox(height: 10),
+
+              // Confirm Password text field
               MyTextField(
                 hintText: 'Confirm Password',
                 obscureText: true,
@@ -243,8 +280,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
 
               const SizedBox(height: 10),
-              // forgot password
-              //everything centers row set to start maixis aligns to right
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -259,16 +294,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ],
                 ),
               ),
-              //Sign in button
               const SizedBox(height: 25),
+
+              // Sign Up button
               MyButton(
                 onTap: () {
-                  formValiation();
+                  formValidation();
                 },
                 text: "Sign Up",
               ),
-              // or continue with
               const SizedBox(height: 50),
+
+              // Divider for "or continue with"
               Row(
                 children: [
                   Expanded(
@@ -292,9 +329,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
+
+              // Social media login buttons
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -307,15 +344,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              // google + sign in button
-
               const SizedBox(height: 50),
 
+              // Already a member? Register Now
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Not a member ?',
+                    'Not a member?',
                     style: TextStyle(
                       color: Colors.grey[700],
                     ),
@@ -327,9 +363,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -1,14 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tangrad/firebase_options.dart';
 import 'package:tangrad/models/document_provider.dart';
-
-import 'models/shop.dart';
+import 'package:tangrad/widgets/global.dart';
 import 'screens/splash/splash.dart';
 
-//import 'package:teeorcofee/screens/home_screen.dart';
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // initailize local data for use
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  sharedPreferences = await SharedPreferences.getInstance();
 
-void main() {
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "286110052676",
+    "project_id": "tangrad-8e049",
+    "storage_bucket": "tangrad-8e049.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286110052676:android:d428b1bf6b1c24d1a42711",
+        "android_client_info": {
+          "package_name": "com.example.tangrad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm8VLbg4VJ0dL26MpzsZigYYm0HLgxciw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286110052676:android:eddb9a9c2fec935fa42711",
+        "android_client_info": {
+          "package_name": "com.tangrad.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm8VLbg4VJ0dL26MpzsZigYYm0HLgxciw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
